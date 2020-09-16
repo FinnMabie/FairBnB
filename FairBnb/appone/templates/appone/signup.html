@@ -1,20 +1,17 @@
-<!DOCTYPE html>
+{% extends 'appone/index.html' %}
 {% load crispy_forms_tags %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>sign-up</title>
-</head>
+
 <body>
-    <form action="" method="post">
-        {% csrf_token %}
-        {% if form.errors %}
-            {{ form.errors }}
-        {% endif %}
-        {% for field in form %}
-            {{field|as_crispy_field}}
-        {% endfor %}
-        <button type="submit"> Sign up </button>
-  </form>
+{% block content %}
+    <div class="jumbotron">
+        <form action="" method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                {{field|as_crispy_field}}
+            {% endfor %}
+            <button type="submit"> Sign up </button>
+      </form>
+    </div>
+
+{% endblock %}
 </body>
-</html>
