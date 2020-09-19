@@ -1,0 +1,24 @@
+{% extends 'appone/home.html' %}
+{% load crispy_forms_tags %}
+
+<body>
+{% block content %}
+    <div class="jumbotron">
+        {% if qs %}
+            <ul class="list-group">
+                {% for property in qs %}
+
+                    <li class="list-group-item">
+                        {{ property }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="alert alert-danger" role="alert">
+              You have no saved homes.
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}
+</body>

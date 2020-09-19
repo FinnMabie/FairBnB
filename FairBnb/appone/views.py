@@ -1,4 +1,5 @@
 from django.http import HttpResponseRedirect
+from django.db.models import ObjectDoesNotExist
 from django.shortcuts import render
 from django.contrib.auth import login, authenticate
 
@@ -6,7 +7,9 @@ from django.views.generic.edit import FormView
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
+
+from .forms import SearchForm, SaveHomeForm
+from .models import Property
 
 
 # Create your views here.
@@ -14,7 +17,7 @@ def index(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect("/appone/auth_home")
     else:       # Unregistered User
-        return render(request, 'appone/index.html')
+        return render(request, 'appone/index.html', context={'form':SearchForm()})
 
 
 class SignUp(FormView):
@@ -48,10 +51,68 @@ class SignIn(LoginView):
 
 def home(request):
     user = request.user
-    print(type(user))
     if not user.is_authenticated:
         return HttpResponseRedirect("/appone/sign-in")
     return render(request, 'appone/home.html', context={
-        'user':user
+        'user':user,
+        'form':SearchForm()
     })
+
+
+def search(request):
+    query = request.POST.get('search_box')
+
+    try:
+        qs = list(Property.objects.filter(address__contains=query))
+
+    except ObjectDoesNotExist:
+        print('Object not found')
+        qs = None
+
+    return render(request, 'appone/search_results.html', context={'form':SearchForm(), 'qs':qs, 'query':query})
+
+
+def list_saved_homes(request):
+    user = request.user
+    qs = user.property_set.all()
+    return render(request, 'appone/saved_homes.html', context={'form':SearchForm(), 'qs':qs})
+
+
+
+
+def save(request, address=None, query=None):
+    try:
+        qs = list(Property.objects.filter(address__contains=query))
+
+    except ObjectDoesNotExist:
+        print('Object not found')
+        qs = None
+
+    if address:
+        address = address.split(',')
+
+        try:
+            q = Property.objects.get(
+                address=address[0].strip(),
+                zip_code=int(address[1].strip())
+            )
+
+            if not(request.user in q.user.all()):
+                q.user.add(request.user)
+                print(str(request.user) + "successfully saved a property.")
+        except ObjectDoesNotExist:
+            obj = Property.objects.create(
+                address=address[0].strip(),
+                zip_code=address[1].strip(),
+            )
+            obj.user.add(request.user)
+
+    return render(request, 'appone/search_results.html', context={'form': SearchForm(), 'qs': qs, 'query': query})
+
+
+
+
+
+
+
 

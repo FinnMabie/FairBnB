@@ -1,0 +1,23 @@
+{% extends 'appone/index.html' %}
+{% load crispy_forms_tags %}
+
+<body>
+{% block content %}
+<div class="jumbotron container-md">
+    {% if qs %}
+        <ul class="list-group">
+            {% for property in qs %}
+                <li class="list-group-item">
+                    {{ property }}
+                    <a class="btn btn-outline-success float-right" href="{% url 'save' property query %}"> Save </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="alert alert-danger" role="alert">
+          No homes found. Pleas check your spelling.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+</body>

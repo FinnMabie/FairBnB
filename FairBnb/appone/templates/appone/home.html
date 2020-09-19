@@ -28,7 +28,7 @@
         <title>FairBnB</title>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" href="{% url 'home' %}">FairBnB</a>
-            <a class="navbar-brand">Hi, {{ user.username }}</a>
+
             <a class="button btn-sm btn-info" href="{% url 'sign-out' %}" >Sign Out</a>
 
             <button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -59,11 +59,21 @@
                             <a class="dropdown-item" href="#">Neighborhoods</a>
                         </div>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            Hi, {{user.username}}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'saved-homes' %}" >Saved Properties</a>
+                        </div>
+                    </li>
 
                 </ul>
-                <form class="form-inline my-2 my-lg-0">
-                    <input onclick="change()" id="search" class="form-control mr-sm-2" type="search" placeholder="Search Homes"
-                           aria-label="Search">
+                <form class="form-inline my-2 my-lg-0" action="/appone/search" method="post">
+                    {% csrf_token %}
+                    {{ form.search_box }}
+
                     <script>
                     function change()
                     {
