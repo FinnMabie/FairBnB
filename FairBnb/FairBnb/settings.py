@@ -70,6 +70,10 @@ TEMPLATES = [
     },
 ]
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.auth',
+)
+
 WSGI_APPLICATION = 'FairBnb.wsgi.application'
 
 

@@ -69,7 +69,7 @@ def search(request):
         print('Object not found')
         qs = None
 
-    return render(request, 'appone/search_results.html', context={'form':SearchForm(), 'qs':qs, 'query':query})
+    return render(request, 'appone/search_results.html', context={'form':SearchForm(), 'qs':qs, 'query':query, 'user':request.user})
 
 
 def list_saved_homes(request):
@@ -81,6 +81,10 @@ def list_saved_homes(request):
 
 
 def save(request, address=None, query=None):
+    if request.user.is_authenticated:
+        is_auth = True
+    else:
+        is_auth = False
     try:
         qs = list(Property.objects.filter(address__contains=query))
 
@@ -107,7 +111,7 @@ def save(request, address=None, query=None):
             )
             obj.user.add(request.user)
 
-    return render(request, 'appone/search_results.html', context={'form': SearchForm(), 'qs': qs, 'query': query})
+    return render(request, 'appone/search_results.html', context={'form': SearchForm(), 'qs': qs, 'query': query, 'is_auth':is_auth})
 
 
 

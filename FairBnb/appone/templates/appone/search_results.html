@@ -1,9 +1,13 @@
-{% extends 'appone/index.html' %}
 {% load crispy_forms_tags %}
+
+
+{% extends 'appone/home.html' %}
+
 
 <body>
 {% block content %}
 <div class="jumbotron container-md">
+    {{user}}
     {% if qs %}
         <ul class="list-group">
             {% for property in qs %}
